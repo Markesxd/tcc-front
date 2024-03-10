@@ -1,0 +1,28 @@
+.user-page-content {
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.user-page-profile-picture {
+    margin-top: 1rem;
+    margin-bottom: 5rem;
+    width: 5rem;
+    height: 5rem;
+    border-radius: 10rem;
+}
+
+.user-page-detail {
+    margin-top: 1rem;
+    width: 10rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.user-page-detail-label {
+    font-size: 0.7rem;
+    color: #9f9f9f;
+}

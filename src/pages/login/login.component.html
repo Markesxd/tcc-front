@@ -1,0 +1,18 @@
+<div class="login-wrapper">
+    <form class="login-body" [formGroup]="editForm" (ngSubmit)="onSubmit()">
+        <div class="login-fail" *ngIf="loginFailed">Email e/ou Senha Inválidos!</div>
+        <div class="login-fail" *ngIf="serviceFailed">Erro no Servidor</div>
+        <div>
+            <label for="email">Email</label>
+            <span *ngIf="emailErrors && emailErrors['required']" class="login-error">Preencha o Email</span>
+            <span *ngIf="emailErrors && emailErrors['email']" class="login-error">Email Inválido</span>
+        </div>
+        <input type="email" id="Email" name="email" formControlName="email">
+        <div>
+            <label for="password">Senha</label>
+            <span *ngIf="!isPasswordValid" class="login-error">Preecha a Senha</span>
+        </div>
+        <input type="password" id="password" name="password" formControlName="password">
+        <button class="login-button" type="submit" [disabled]="!editForm.valid" >Entrar</button>
+    </form>
+</div>

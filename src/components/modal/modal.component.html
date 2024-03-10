@@ -1,0 +1,23 @@
+<div class="overlay" *ngIf="show" (click)="close()">
+    <div class="modal-body" (click)="$event.stopPropagation()">
+        <h3 class="form-title">Novo Gato</h3>
+        <form [formGroup]="editForm" (ngSubmit)="onSubmit()">
+            <div>
+                <label class="form-label" for="name">Nome</label>
+                <input type="text" id="name" formControlName="name">
+            </div>
+            <div>
+                <label class="form-label" for="birthday">Nascimento</label>
+                <input type="date" id="birthday" formControlName="birthday">
+            </div>
+            <div>
+                <label class="form-label">Sexo</label>
+                <label for="genderM">Macho</label>
+                <input type="radio" formControlName="gender" id="genderM" value="male">
+                <label for="genderF">Femea</label>
+                <input type="radio" formControlName="gender" id="genderF" value="female">
+            </div>
+            <button class="form-buttom" type="submit">Cadastrar</button>
+        </form>
+    </div>
+</div>

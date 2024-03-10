@@ -1,0 +1,25 @@
+<div class="p-3">
+    <h3 class="form-title">Novo Gato</h3>
+    <form class="d-flex flex-column gap-3" [formGroup]="editForm" (ngSubmit)="onSubmit()">
+        <div>
+            <label class="form-label" for="name">Nome</label>
+            <input class="form-control" type="text" id="name" formControlName="name">
+        </div>
+        <div>
+            <label class="form-label" for="birthday">Nascimento</label>
+            <input class="form-control" type="date" id="birthday" formControlName="birthday">
+        </div>
+        <div>
+            <label class="form-label">Sexo</label>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" formControlName="gender" id="genderM" value="1">
+                <label class="form-check-label mt-1" for="genderM">Macho</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" formControlName="gender" id="genderF" value="0">
+                <label class="form-check-label mt-1" for="genderF">Femea</label>
+            </div>
+        </div>
+        <button class="form-buttom" type="submit" [disabled]="!editForm.valid">Cadastrar</button>
+    </form>
+</div>

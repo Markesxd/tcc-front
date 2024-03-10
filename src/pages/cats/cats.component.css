@@ -1,0 +1,79 @@
+.cards {
+    overflow: hidden;
+}
+
+.card {
+    width: 70vw;
+    display: flex;
+    margin: 2rem auto;
+    flex-direction: column;
+    align-items: center;
+    border: 1px solid black;
+    border-radius: 1rem;
+}
+
+.card--header {
+    width: 80%;
+    margin: 1rem 0;
+    display: flex;
+    justify-content: space-between;
+}
+
+.card-title {
+    display: inline;
+    margin-right: 0.5rem;
+    font-size: 1rem;
+}
+
+.card-faded-text {
+    color: #989898;
+    font-size: 0.9rem;
+}
+
+.card-img {
+    margin: 2rem;
+    width: 50%;
+}
+
+.cats-page-content {
+    position: relative;
+    width: 100%;
+}
+
+.loose-title {
+    margin: 10rem 1rem;
+    text-align: center;
+    font-size: 2rem;
+}
+
+.arrow-left {
+    position: absolute;
+    left: 10px;
+    top: 42%;
+    transform: rotate(180deg);
+}
+
+.arrow-right {
+    position: absolute;
+    right: 10px;
+    top: 42%;
+}
+
+.bubbles {
+    display: flex;
+    justify-content: center;
+    width: 50%;
+    margin: 1rem auto;
+}
+
+.bubble {
+    width: 5px;
+    height: 5px;
+    margin: 0 0.5rem;
+    border: 1px solid black;
+    border-radius: 10px;
+}
+
+.active {
+    background: black
+}

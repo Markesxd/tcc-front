@@ -1,0 +1,43 @@
+.overlay {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    z-index: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background-color: #00000040;
+}
+
+.modal-body {
+    background: white;
+    border-radius: 2rem;
+    padding: 2rem 1rem
+}
+
+.form-title {
+    font-size: 1.5rem;
+    width: 100%;
+    border-bottom: 1px solid black;
+    margin-bottom: 1rem;
+}
+
+.form-label {
+    display: block;
+    font-size: 1rem;
+    color: #909090;
+    margin-top: 1rem;
+}
+
+.form-buttom {
+    display: block;
+    margin: 0 auto;
+    margin-top: 1rem;
+    border: 1px solid black;
+    border-radius: 0.5rem;
+    background-color: white;
+    padding: 0.5rem 2.5rem;
+}

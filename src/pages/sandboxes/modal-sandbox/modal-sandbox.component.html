@@ -1,0 +1,8 @@
+<div class="p-3">
+    <h3 class="form-title">Caixa</h3>
+    <form [formGroup]="form">
+        <label for="name" class="form-label">Nome</label>    
+        <input type="text" id="name" class="form-control" formControlName="name">
+        <button (click)="save()" type="button" class="form-buttom" [disabled]="!form.valid">Enviar</button>
+    </form>
+</div>
