@@ -30,6 +30,11 @@ export class UserService {
         }).pipe(map(res => res.body as IAuthenticationResponse));
     }
 
+    singUp(user: IUser): Observable<Object>
+    {
+        return this.http.post('http://localhost:8000/register', user);
+    }
+
     fetch(): Observable<IUser> {
         return this.http.get(`${this.baseUrl}`, {
             headers: this.getHeaders(),

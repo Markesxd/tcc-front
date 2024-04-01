@@ -1,0 +1,21 @@
+<div class="register-wrapper">
+    <form class="register-body" [formGroup]="editForm" (ngSubmit)="onSubmit()">
+        <div>
+            <label for="name">Nome</label>
+        </div>
+        <input type="text" id="name" name="name" formControlName="name">
+        <div>
+            <label for="email">Email</label>
+        </div>
+        <input type="email" id="Email" name="email" formControlName="email">
+        <div>
+            <label for="password">Senha</label>
+        </div>
+        <input type="password" id="password" name="password" formControlName="password">
+        <div>
+            <label for="repeat">Repita a senha</label>
+        </div>
+        <input type="password" id="repeat" name="repeat" formControlName="repeat">
+        <button class="register-button" type="submit" [disabled]="!editForm.valid" >Cadastrar</button>
+    </form>
+</div>

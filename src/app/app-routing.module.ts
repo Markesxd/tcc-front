@@ -41,6 +41,10 @@ const routes: Routes = [
     path: 'sandbox',
     canActivate: [canActivate],
     loadComponent: () => import('../pages/sandboxes/sandboxes.component').then(c => c.SandboxesComponent)
+  },
+  {
+    path: 'register',
+    loadComponent: () => import('../pages/cadastro/cadastro.component').then(c => c.CadastroComponent)
   }
 ];
 

@@ -1,5 +1,6 @@
 <div class="login-wrapper">
     <form class="login-body" [formGroup]="editForm" (ngSubmit)="onSubmit()">
+        <img class="login-logo" src="../../../assets/icon-512x512.png" alt="logo">
         <div class="login-fail" *ngIf="loginFailed">Email e/ou Senha Inválidos!</div>
         <div class="login-fail" *ngIf="serviceFailed">Erro no Servidor</div>
         <div>
@@ -14,5 +15,6 @@
         </div>
         <input type="password" id="password" name="password" formControlName="password">
         <button class="login-button" type="submit" [disabled]="!editForm.valid" >Entrar</button>
+        <a href="/register" class="login-anchor">Cadastre-se</a>
     </form>
 </div>

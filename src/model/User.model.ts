@@ -14,7 +14,7 @@ export class User implements IUser {
     password?: string;
 
     public createFromForm(formGroup: FormGroup) {
-        this.username = formGroup.get('email')?.value;
+        this.username = formGroup.get('name')?.value;
         this.email = formGroup.get('email')?.value;
         this.password = formGroup.get('password')?.value;
     }

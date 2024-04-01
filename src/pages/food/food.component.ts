@@ -1,10 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { UserService } from 'src/services/user.service';
-import { CookieService } from 'ngx-cookie-service';
-import { Router } from '@angular/router';
 import { CreatePlanComponent } from './components/create-plan/create-plan.component';
-import { IPlan } from 'src/model/Plan.model';
+import { IPlan, Meal } from 'src/model/Plan.model';
 import { PlanService } from 'src/services/plan.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
@@ -47,6 +44,13 @@ export class FoodComponent implements OnInit {
   onNextCard(): void {
     this.currentCard++;
   }
+
+  onServingMeal(event: any): void {
+    const meal = new Meal();
+    meal.id = Number(event.target.value);
+    meal.foiServida = event.target?.checked
+    this.planService.serve(meal).subscribe();
+  }  
 
   get currentCard(): number {
     return this._currentCard;

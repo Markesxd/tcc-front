@@ -49,6 +49,7 @@ export class LoginComponent {
   onSubmit() {
     const user = new User();
     user.createFromForm(this.editForm);
+    user.username = user.email;
     this.userService.login(user)
     .pipe(map(d => d),
     catchError((err: HttpErrorResponse) => {

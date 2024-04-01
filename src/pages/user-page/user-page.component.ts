@@ -27,7 +27,7 @@ export class UserPageComponent implements OnInit{
   }
 
   logout(): void {
-    this.cookieService.delete('id');
+    this.cookieService.delete('token');
     this.router.navigate(['/']);
   }
 }

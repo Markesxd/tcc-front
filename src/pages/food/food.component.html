@@ -8,8 +8,8 @@
             <div class="card gap-2" *ngIf="currentCard == i">
                 <h3 class="card-title">{{plan.nome}}</h3>
                 <div class="card-field" *ngFor="let meal of plan.refeicoes">
-                    <input class="card-checkbox" type="checkbox" id="{{meal.id}}" >
-                    <label class="card-checkbox-label" for="{{meal.id}}">{{meal.nome}}</label>
+                    <input class="card-checkbox" type="checkbox" id="meal{{meal.id}}" (change)="onServingMeal($event)" [checked]="meal.foiServida" [value]="meal.id">
+                    <label class="card-checkbox-label" for="meal{{meal.id}}">{{meal.nome}}</label>
                 </div>
             </div>
         </ng-container>
