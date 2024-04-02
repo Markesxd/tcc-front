@@ -61,3 +61,7 @@
 .register-button :active {
     background: var(--secondary-color);
 }
+
+.register-button :disabled {
+    background: #f1f1f1;
+}

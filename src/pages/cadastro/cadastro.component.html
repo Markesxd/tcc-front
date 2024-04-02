@@ -2,20 +2,25 @@
     <form class="register-body" [formGroup]="editForm" (ngSubmit)="onSubmit()">
         <div>
             <label for="name">Nome</label>
+            <span *ngIf="nameControl?.dirty && !nameControl?.valid" class="register-error">Preecha o Nome</span>
         </div>
         <input type="text" id="name" name="name" formControlName="name">
         <div>
             <label for="email">Email</label>
+            <span *ngIf="emailControl?.dirty && emailControl?.errors?.['required']" class="register-error">Preecha o email</span>
+            <span *ngIf="emailControl?.dirty && emailControl?.errors?.['email']" class="register-error">Email incorreto</span>
         </div>
         <input type="email" id="Email" name="email" formControlName="email">
         <div>
             <label for="password">Senha</label>
+            <span *ngIf="passwordControl?.dirty && !passwordControl?.valid" class="register-error">Preecha a Senha</span>
         </div>
         <input type="password" id="password" name="password" formControlName="password">
         <div>
-            <label for="repeat">Repita a senha</label>
+            <label for="repeat">Repitir senha</label>
+            <span *ngIf="repeatControl?.dirty && editForm.errors?.['missMatchPassword']" class="register-error">Senhas devem coincidir</span>
         </div>
         <input type="password" id="repeat" name="repeat" formControlName="repeat">
-        <button class="register-button" type="submit" [disabled]="!editForm.valid" >Cadastrar</button>
+        <button class="register-button" type="submit" [disabled]="!editForm.valid">Cadastrar</button>
     </form>
 </div>

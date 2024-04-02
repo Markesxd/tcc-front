@@ -1,12 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { catchError, map } from 'rxjs';
 import { UserService } from 'src/services/user.service';
 import { User } from 'src/model/User.model';
+import { matchingPasswordValidator } from 'src/validators/matchingPasswordValidator.directive';
 
 @Component({
   selector: 'cadastro',
@@ -22,6 +23,9 @@ export class CadastroComponent {
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required]],
     repeat: ['', [Validators.required]]
+  },
+  {
+    validators: [matchingPasswordValidator]
   })
 
   constructor (
@@ -30,6 +34,22 @@ export class CadastroComponent {
     private cookieService: CookieService,
     private router: Router
   ) {}
+
+  get nameControl(): AbstractControl | null {
+    return this.editForm.get('name');
+  }
+
+  get emailControl(): AbstractControl | null {
+    return this.editForm.get('email');
+  }
+
+  get passwordControl(): AbstractControl | null {
+    return this.editForm.get('password'); 
+  }
+
+  get repeatControl(): AbstractControl | null {
+    return this.editForm.get('repeat'); 
+  }
 
   onSubmit() {
     const user = new User();
