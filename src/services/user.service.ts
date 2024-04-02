@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders, HttpResponse } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { CookieService } from "ngx-cookie-service";
 import { Observable, map } from "rxjs";
+import { environment } from "src/environments/environment";
 import { IAuthenticationResponse } from "src/model/AuthenticationResponse.model";
 import { ICat } from "src/model/Cat.model";
 import { IPlan } from "src/model/Plan.model";
@@ -17,7 +18,7 @@ interface ICatsResponse {
     providedIn: 'root'
 })
 export class UserService {
-    private baseUrl = 'http://localhost:8000/user';
+    private baseUrl = environment.apiUrl + '/user';
 
     constructor(
         private http: HttpClient,
@@ -25,14 +26,14 @@ export class UserService {
     ) {}
 
     login(user: IUser): Observable<IAuthenticationResponse> {
-        return this.http.post(`http://localhost:8000/login`, user, {
+        return this.http.post(environment.apiUrl + '/login', user, {
             observe: 'response'
         }).pipe(map(res => res.body as IAuthenticationResponse));
     }
 
     singUp(user: IUser): Observable<Object>
     {
-        return this.http.post('http://localhost:8000/register', user);
+        return this.http.post(environment.apiUrl + '/register', user);
     }
 
     fetch(): Observable<IUser> {

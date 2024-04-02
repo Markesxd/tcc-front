@@ -2,13 +2,14 @@ import { HttpClient, HttpHeaders, HttpResponse } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { CookieService } from "ngx-cookie-service";
 import { Observable } from "rxjs";
+import { environment } from "src/environments/environment";
 import { IMeal, IPlan } from "src/model/Plan.model";
 
 @Injectable({
     providedIn: 'root'
 })
 export class PlanService {
-    private baseUrl = 'http://localhost:8000/plano-alimentar';
+    private baseUrl = environment.apiUrl + '/plano-alimentar';
     
     constructor(
         private http: HttpClient,

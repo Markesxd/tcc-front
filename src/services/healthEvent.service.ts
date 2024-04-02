@@ -2,13 +2,14 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { CookieService } from "ngx-cookie-service";
 import { Observable, map } from "rxjs";
+import { environment } from "src/environments/environment";
 import { IHealthEvent } from "src/model/healthEvent.model";
 
 @Injectable({
     providedIn: 'root'
 })
 export class HealthEventService {
-    private baseUrl = 'http://localhost:8000/evento';
+    private baseUrl = environment.apiUrl + '/evento';
     constructor(
         private http: HttpClient,
         private cookieService: CookieService

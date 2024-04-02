@@ -1,14 +1,15 @@
 import { Injectable } from "@angular/core";
 import {HttpClient, HttpHeaders, HttpResponse} from "@angular/common/http";
-import { Observable, map } from "rxjs";
+import { Observable } from "rxjs";
 import { ICat } from "src/model/Cat.model";
 import { CookieService } from "ngx-cookie-service";
+import { environment } from "src/environments/environment";
 
 @Injectable({
     providedIn: 'root'
 })
 export class CatService {
-    private base = 'http://localhost:8000/gato';
+    private base = environment.apiUrl + '/gato';
     
     constructor(
         private http: HttpClient,
