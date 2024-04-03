@@ -63,4 +63,8 @@ export class CadastroComponent {
       });
     });
   }
+
+  navigateBack(): void {
+    this.router.navigate(['/']);
+  }
 }

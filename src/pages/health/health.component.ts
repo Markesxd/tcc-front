@@ -8,6 +8,7 @@ import { CookieService } from 'ngx-cookie-service';
 import { FormatDate } from 'src/Pipes/FormatDate.pipe';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { convertFromDate } from 'src/util/date';
 
 @Component({
   selector: 'app-health',
@@ -36,14 +37,21 @@ export class HealthComponent {
   openModal(event?: IHealthEvent): void {
     const ref = this.modalService.open(CreateHealthEventComponent, {centered: true});
     if(event) {
+      const data = new Date(event.data??'');
+      ref.componentInstance.isCreating = false;
       ref.componentInstance.editForm.patchValue({
         name: event.nome,
+        date: data,
+        repeatInterval: event.intervaloDeRepeticao
       });
+      ref.componentInstance.firstTimeLoadCats(event.gatos);
+      setTimeout(()=> {
+        ref.componentInstance.firstTimeLoadDate();
+      }, 200);
     }
     ref.closed.subscribe((_event: IHealthEvent) => {
       if(event !== undefined){
         _event.id = event.id;
-        _event.usuario = {id: this.cookieService.get('id')};
         this.healthEventService.put(_event).subscribe(() => {
           this.events = this.events?.filter(evt => evt.id !== event.id);
           this.events?.push(_event);

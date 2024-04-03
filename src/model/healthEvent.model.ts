@@ -23,7 +23,7 @@ export class HealthEvent implements IHealthEvent {
         this.nome = formGroup.get('name')?.value;
         this.data = formGroup.get('date')?.value;
         this.gatos = formGroup.get('cats')?.value;
-        this.intervaloDeRepeticao = formGroup.get('repeatInterval')?.value;
+        this.intervaloDeRepeticao = Number(formGroup.get('repeatInterval')?.value);
     }
 }
 

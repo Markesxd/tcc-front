@@ -11,9 +11,10 @@
     justify-content: center;
 }
 
-.register-logo {
-    width: 5rem;
-    align-self: center;
+.register-title {
+    font-size: 1.75rem;
+    border-bottom: 1px solid black;
+    margin-bottom: 2rem;
 }
 
 .register-body {
@@ -51,11 +52,16 @@
 }
 
 .register-button {
+    padding: 0.5rem;
     border: 1px solid white;
-    border-radius: 10px;
+    border-radius: 0.5rem;
     background: var(--primary-color);
     color: black;
     transition: 0.3s;
+}
+
+.secondary {
+    background: var(--secondary-color);
 }
 
 .register-button :active {

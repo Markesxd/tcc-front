@@ -1,14 +1,14 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { CookieService } from 'ngx-cookie-service';
 import { FormatRepeatInterval } from 'src/Pipes/FormatRepeatInterval.pipe';
 import { CatService } from 'src/services/cat.service';
-import { UserService } from 'src/services/user.service';
 import { ICat } from 'src/model/Cat.model';
 import { User } from 'src/model/User.model';
 import { HealthEvent, IHealthEvent, ReapeatInterval } from 'src/model/healthEvent.model';
+import { convertFromDate } from 'src/util/date';
 
 @Component({
   selector: 'create-health-event',
@@ -18,9 +18,8 @@ import { HealthEvent, IHealthEvent, ReapeatInterval } from 'src/model/healthEven
   standalone: true
 })
 export class CreateHealthEventComponent {
-  @Output()
-
   repeatIntervalValues = (Object.values(ReapeatInterval) as ReapeatInterval[]).filter(o => !isNaN(o));
+  isCreating = true;
 
   editForm = this.fb.group({
     name: ['', [Validators.required]],
@@ -39,7 +38,6 @@ export class CreateHealthEventComponent {
   ) {}
 
   ngOnInit():void {
-    const id = this.cookieService.get('id');
     this.catService.get().subscribe(cats => {
       this.cats = cats.body as ICat[];
     })
@@ -71,6 +69,10 @@ export class CreateHealthEventComponent {
     this.activeModal.close(healthEvent);
   }
 
+  dismiss(): void {
+    this.activeModal.dismiss();
+  }
+
   get formCats(): ICat[] {
     const cats = this.editForm.get('cats')?.value;
     if(!Array.isArray(cats)) {
@@ -93,6 +95,27 @@ export class CreateHealthEventComponent {
     const cats = this.formCats;
     this.editForm.patchValue({
       cats: cats.filter(cat => cat.id !== id)
-    })
+    });
+  }
+
+  firstTimeLoadCats(cats: ICat[]): void {
+      for(const cat of cats) {
+        this.firstTimeLoadCat(cat);
+      }
+  }
+
+  firstTimeLoadDate(): void {
+    const input = <HTMLInputElement> document.querySelector('#date');
+    const date = this.editForm.get('date')?.value ?? new Date;
+    input.value = convertFromDate(date);
+  }
+
+  firstTimeLoadCat(cat: ICat): void {
+    const input = <HTMLInputElement> document.querySelector(`#i${cat.id}`);
+    if(!input){
+      setTimeout(() => this.firstTimeLoadCat(cat), 100);
+    } else {
+      input.checked = true;
+    }
   }
 }

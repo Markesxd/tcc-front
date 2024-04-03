@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { CookieService } from 'ngx-cookie-service';
-import { ICat, TypeSex } from 'src/model/Cat.model';
+import { ICat } from 'src/model/Cat.model';
 
 @Component({
   selector: 'app-create-cat',
@@ -34,5 +33,9 @@ export class CreateCatComponent {
       cat.aniversario = new Date(this.editForm.get('birthday')?.value ?? '');
       cat.sexo = Number(this.editForm.get('gender')?.value ?? 0);
       return cat;
+    }
+
+    dismiss(): void {
+      this.activeModal.dismiss();
     }
 }

@@ -1,5 +1,6 @@
 <div class="register-wrapper">
     <form class="register-body" [formGroup]="editForm" (ngSubmit)="onSubmit()">
+        <h3 class="register-title">Cadastro</h3>
         <div>
             <label for="name">Nome</label>
             <span *ngIf="nameControl?.dirty && !nameControl?.valid" class="register-error">Preecha o Nome</span>
@@ -21,6 +22,9 @@
             <span *ngIf="repeatControl?.dirty && editForm.errors?.['missMatchPassword']" class="register-error">Senhas devem coincidir</span>
         </div>
         <input type="password" id="repeat" name="repeat" formControlName="repeat">
-        <button class="register-button" type="submit" [disabled]="!editForm.valid">Cadastrar</button>
+        <div class="d-flex justify-content-center">
+            <button class="register-button secondary" type="button" (click)="navigateBack()">Voltar</button>
+            <button class="register-button" type="submit" [disabled]="!editForm.valid">Cadastrar</button>
+        </div>
     </form>
 </div>

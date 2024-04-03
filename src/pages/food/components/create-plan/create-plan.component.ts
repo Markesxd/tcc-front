@@ -92,6 +92,10 @@ export class CreatePlanComponent {
     this.activeModal.close(plan);
   }
 
+  dismiss(): void {
+    this.activeModal.dismiss();
+  }
+
   get meals(): string[] {
     const meals = this.editForm.get('meals')?.value;
     if(!Array.isArray(meals)) {

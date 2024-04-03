@@ -32,4 +32,8 @@ export class ModalSandboxComponent {
     sandbox.limpoEm = new Date();
     return sandbox;
   }
+
+  dismiss(): void {
+    this.activeModal.dismiss();
+  }
 }
