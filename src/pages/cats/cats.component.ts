@@ -2,20 +2,22 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { CookieService } from 'ngx-cookie-service';
 import { CreateCatComponent } from 'src/components/create-cat/create-cat.component';
 import { ModalComponent } from 'src/components/modal/modal.component';
 import { CatService } from 'src/services/cat.service';
 import { UserService } from 'src/services/user.service';
 import { ICat } from 'src/model/Cat.model';
+import { IPlan } from 'src/model/Plan.model';
+import { PlanService } from 'src/services/plan.service';
 
 @Component({
   selector: 'cats-page',
   templateUrl: './cats.component.html',
   styleUrls: ['./cats.component.css'],
   standalone: true,
-  imports: [CommonModule, ModalComponent],
+  imports: [CommonModule, ModalComponent, NgbModule],
   animations: [
     trigger('cardsAnimation', [
       state('left', style({transform: 'translateX(0)'})),
@@ -33,6 +35,7 @@ import { ICat } from 'src/model/Cat.model';
 })
 export class CatsPageComponent implements OnInit {
   pets: ICat[] = [];
+  plans: IPlan[] = [];
 
   direction = 'right';
   private _currentCard = 0;
@@ -40,8 +43,7 @@ export class CatsPageComponent implements OnInit {
 
   constructor(
     private catService: CatService,
-    private cookieService: CookieService,
-    private router: Router,
+    private planService: PlanService,
     private modalService: NgbModal
   ) {}
 
@@ -95,9 +97,25 @@ export class CatsPageComponent implements OnInit {
     return `${yearDif} anos`;
   }
 
+  setPlan(plan: IPlan, cat: ICat): void {
+    if(!plan.gatos) {
+      throw new Error('plan.gatos is undefined');
+    }
+    const _cat = plan.gatos.find(_cat => cat.id === _cat.id);
+    if(!_cat){
+      plan.gatos.push(cat);
+      this.planService.put(plan).subscribe(res => {
+        cat.planoAlimentar = res;
+      });
+    }
+  }
+
   private load(): void {
     this.catService.get().subscribe(res => {
       this.pets = res.body as ICat[];
     });
+    this.planService.fetch().subscribe(res => {
+      this.plans = <IPlan[]> res;
+    })
   }
 }

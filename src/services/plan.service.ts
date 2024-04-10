@@ -28,7 +28,7 @@ export class PlanService {
     }
 
     put(plan: IPlan): Observable<Object> {
-        return this.http.put(this.baseUrl, plan, {headers: this.getHeaders()});
+        return this.http.put(`${this.baseUrl}/${plan.id}`, plan, {headers: this.getHeaders()});
     }
 
     delete(plan: IPlan): Observable<Object> {

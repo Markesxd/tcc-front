@@ -14,9 +14,15 @@
 
 .card--header {
     width: 80%;
-    margin: 1rem 0;
+    margin-top: 1rem;
     display: flex;
     justify-content: space-between;
+}
+
+.card-sub {
+    width: 80%;
+    align-self: center;
+
 }
 
 .card-title {
