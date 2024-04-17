@@ -33,7 +33,7 @@ export class CatService {
     }
 
     put(cat: ICat): Observable<Object> {
-        return this.http.put(this.base, cat, {headers: this.getHeaders()});
+        return this.http.put(`${this.base}/${cat.id}`, cat, {headers: this.getHeaders()});
     }
 
     delete(cat: ICat): Observable<Object> {

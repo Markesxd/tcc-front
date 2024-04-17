@@ -1,13 +1,9 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { NgbModal, NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { CookieService } from 'ngx-cookie-service';
 import { CreateCatComponent } from 'src/components/create-cat/create-cat.component';
-import { ModalComponent } from 'src/components/modal/modal.component';
 import { CatService } from 'src/services/cat.service';
-import { UserService } from 'src/services/user.service';
 import { ICat } from 'src/model/Cat.model';
 import { IPlan } from 'src/model/Plan.model';
 import { PlanService } from 'src/services/plan.service';
@@ -17,7 +13,7 @@ import { PlanService } from 'src/services/plan.service';
   templateUrl: './cats.component.html',
   styleUrls: ['./cats.component.css'],
   standalone: true,
-  imports: [CommonModule, ModalComponent, NgbModule],
+  imports: [CommonModule, NgbModule],
   animations: [
     trigger('cardsAnimation', [
       state('left', style({transform: 'translateX(0)'})),
@@ -59,12 +55,29 @@ export class CatsPageComponent implements OnInit {
     this.currentCard--;
   }
 
-  openModal(): void {
+  openModal(cat?: ICat): void {
     const ref = this.modalService.open(CreateCatComponent, {centered: true});
+    if(cat) {
+      ref.componentInstance.isNew = false;
+      ref.componentInstance.editForm.patchValue({
+        name: cat.nome,
+        birthday: cat.aniversario
+      });
+      ref.componentInstance.loadDate(cat.aniversario);
+      ref.componentInstance.loadGender(cat.sexo);
+      ref.closed.subscribe((_cat: ICat) => {
+        _cat.id = cat.id;
+        this.catService.put(_cat).subscribe(() => this.load());
+      });
+      ref.componentInstance.delete.subscribe(() => {
+        this.catService.delete(cat).subscribe(() => this.load());
+      })
+      return;
+    }
     ref.closed.subscribe((cat: ICat) => {
       this.catService.post(cat).subscribe(res => {
         if(res.ok){
-          this.pets.push(cat);
+          this.load();
         }
       });
     })
@@ -84,6 +97,13 @@ export class CatsPageComponent implements OnInit {
 
   get hasCats(): boolean {
     return this.pets.length !== 0;
+  }
+
+  getOtherPlans(cat: ICat): IPlan[] {
+    if(!this.plans) {
+       throw new Error();
+    }
+    return this.plans.filter(plan => plan.id !== cat.planoAlimentar?.id);
   }
 
   getCatAge(cat: ICat): string {

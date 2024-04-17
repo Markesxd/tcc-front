@@ -8,6 +8,7 @@ import { UserService } from 'src/services/user.service';
 import { SandboxService } from 'src/services/sandbox.service';
 import { CookieService } from 'ngx-cookie-service';
 import { Router } from '@angular/router';
+import { ConfirmationModalComponent } from 'src/components/confirmation-modal/confirmation-modal.component';
 
 @Component({
   selector: 'app-sandboxes',
@@ -44,10 +45,14 @@ export class SandboxesComponent {
   }
 
   deleteBox(sandbox: ISandbox): void {
-    if(!sandbox.id) {
-      throw new Error("Sandbox missing id");
-    }
-    this.sandboxService.delete(sandbox.id).subscribe(() => this.load());
+    const ref = this.modalService.open(ConfirmationModalComponent, {centered: true});
+    ref.componentInstance.text = "Você tem certeza que deseja excluir essa caixa de areia?";
+    ref.closed.subscribe(() => {
+      if(!sandbox.id) {
+        throw new Error("Sandbox missing id");
+      }
+      this.sandboxService.delete(sandbox.id).subscribe(() => this.load());
+    })
   }
 
   load(): void {

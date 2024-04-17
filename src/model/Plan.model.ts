@@ -19,7 +19,7 @@ export class Plan implements IPlan {
 
     public createFromForm(formGroup: FormGroup): void {
         this.nome = formGroup.get("name")?.value ?? "";
-        this.refeicoes = deserializeMeals(formGroup.get("meals")?.value ?? []);
+        this.refeicoes = formGroup.get("meals")?.value ?? [];
         this.gatos = formGroup.get("cats")?.value ?? [];
     }
 }
@@ -36,12 +36,4 @@ export class Meal implements IMeal {
     nome?: string;
     foiServida?: boolean;
     planoAlimentar?: IPlan;
-}
-
-function deserializeMeals(meals: string[]): IMeal[] {
-    return meals.map(label => {
-        const meal = new Meal();
-        meal.nome = label;
-        return meal;
-    });
 }

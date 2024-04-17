@@ -1,13 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { CookieService } from 'ngx-cookie-service';
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CatService } from 'src/services/cat.service';
-import { UserService } from 'src/services/user.service';
 import { ICat } from 'src/model/Cat.model';
-import { IMeal, IPlan, Plan } from 'src/model/Plan.model';
-import { User } from 'src/model/User.model';
+import { IMeal, IPlan, Meal, Plan } from 'src/model/Plan.model';
+import { ConfirmationModalComponent } from 'src/components/confirmation-modal/confirmation-modal.component';
 
 @Component({
   selector: 'create-plan',
@@ -18,38 +16,30 @@ import { User } from 'src/model/User.model';
 })
 export class CreatePlanComponent {
   @Input()
-  show = true;
+  isNew = true;
 
   @Output()
-  onClose = new EventEmitter<IPlan | undefined>();
+  delete = new EventEmitter<void>();
 
   editForm = this.fb.group({
     name: ['', [Validators.required]],
-    meals: [[] as string[], [Validators.required]],
+    meals: [[] as IMeal[], [Validators.required]],
     meal: '',
     cats: [[] as ICat[]]
   })
-  mealNextId = 0;
   cats?: ICat[];
 
   constructor(
     protected fb: FormBuilder,
-    private cookieService: CookieService,
     private catService: CatService,
-    private activeModal: NgbActiveModal
+    private activeModal: NgbActiveModal,
+    private modalService: NgbModal
   ) {}
 
-    ngOnInit():void {
-      this.catService.get().subscribe(cats => {
-        this.cats = cats.body as ICat[];
-      })
-    }
-
-  close(plan?: IPlan): void {
-    this.editForm.get('name')?.patchValue('');
-    this.editForm.get('meals')?.patchValue([]);
-    this.editForm.get('cats')?.patchValue([]);
-    this.onClose.emit(plan);
+  ngOnInit():void {
+    this.catService.get().subscribe(cats => {
+      this.cats = cats.body as ICat[];
+    });
   }
 
   catchKeyPress(event: Event): void {
@@ -58,36 +48,43 @@ export class CreatePlanComponent {
   }
 
   addMeal(): void {
-    const meal = this.editForm.get('meal')?.value;
-    if(!meal) {
+    const meal = new Meal(); 
+    meal.nome = this.editForm.get('meal')?.value ?? undefined;
+    if(!meal.nome) {
       return;
     }
     this.pushMeal(meal);
     this.editForm.patchValue({meal: ''});
   } 
 
+  onDelete(): void {
+    const ref = this.modalService.open(ConfirmationModalComponent, {centered: true});
+    ref.componentInstance. text = "Você tem certeza que quer excluir este Plano Alimentar?";
+    ref.closed.subscribe(() => {
+      this.delete.emit();
+      this.dismiss();
+    });
+  }
+
   onChangeCat(event: Event): void {
-    const input = event.target as HTMLInputElement;
+    const input = <HTMLInputElement | null> event.target;
     if(input === null){
       return;
     }
     const id = Number(input.value);
+    const cat = this.getCatById(id);
+    if(!cat) {
+      return;
+    }
     if(input.checked) {
-      const cat = this.getCatById(id);
-      if(!cat) {
-        return;
-      }
       this.pushCat(cat);
     } else {
-      this.removeCat(id);
+      this.removeCat(cat);
     }
   }
 
-  onSubmit():void {
-    const plan = new Plan;
-    const user = new User;
-    user.id = this.cookieService.get("id");
-    plan.usuario = user;
+  onSubmit(): void {
+    const plan = new Plan();
     plan.createFromForm(this.editForm);
     this.activeModal.close(plan);
   }
@@ -96,12 +93,12 @@ export class CreatePlanComponent {
     this.activeModal.dismiss();
   }
 
-  get meals(): string[] {
+  get meals(): IMeal[] {
     const meals = this.editForm.get('meals')?.value;
     if(!Array.isArray(meals)) {
       throw new Error("meals is not array!");
     }
-    return meals
+    return meals;
   }
 
   get formCats(): ICat[] {
@@ -116,16 +113,17 @@ export class CreatePlanComponent {
     return this.cats?.find(cat => cat.id === id);
   }
 
-  pushMeal(meal: string): void {
+  pushMeal(meal: IMeal): void {
     const meals = this.meals;
     meals.push(meal);
     this.editForm.patchValue({meals});
   }
 
-  removeMeal(id: number){
+  removeMeal(meal: IMeal){
     const meals = this.meals;
-    meals.splice(id, 1);
-    this.editForm.patchValue({meals});
+    this.editForm.patchValue({
+      meals: meals.filter(_meal => _meal !== meal)
+    });
   }
 
   pushCat(cat: ICat): void {
@@ -134,10 +132,25 @@ export class CreatePlanComponent {
     this.editForm.patchValue({cats});
   }
 
-  removeCat(id: number): void {
+  removeCat(cat: ICat): void {
     const cats = this.formCats;
     this.editForm.patchValue({
-      cats: cats.filter(cat => cat.id !== id)
-    })
+      cats: cats.filter(_cat => _cat.id !== cat.id)
+    });
+  }
+
+  checkOldCats(cats: ICat[]): void {
+    cats.forEach(cat => {
+      this.checkOldcat(cat);
+    });
+  }
+
+  private checkOldcat(cat: ICat): void {
+    const input = <HTMLInputElement | null> document.querySelector(`#i${cat.id}`);
+    if(!input) {
+      setTimeout(() => this.checkOldcat(cat), 100);
+      return;
+    }
+    input.checked = true;
   }
 }

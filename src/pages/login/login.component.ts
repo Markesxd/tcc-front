@@ -62,7 +62,7 @@ export class LoginComponent {
     }))
     .subscribe(response => {
       this.cookieService.set('token', response.token, 1);
-      this.router.navigate(['my-cats']);
+      this.router.navigate(['food']);
     })
   }
 }

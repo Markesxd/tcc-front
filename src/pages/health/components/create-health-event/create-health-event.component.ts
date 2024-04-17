@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CookieService } from 'ngx-cookie-service';
 import { FormatRepeatInterval } from 'src/Pipes/FormatRepeatInterval.pipe';
 import { CatService } from 'src/services/cat.service';
@@ -9,6 +9,8 @@ import { ICat } from 'src/model/Cat.model';
 import { User } from 'src/model/User.model';
 import { HealthEvent, IHealthEvent, ReapeatInterval } from 'src/model/healthEvent.model';
 import { convertFromDate } from 'src/util/date';
+import { ConfirmationModalComponent } from 'src/components/confirmation-modal/confirmation-modal.component';
+import { HealthEventService } from 'src/services/healthEvent.service';
 
 @Component({
   selector: 'create-health-event',
@@ -19,7 +21,10 @@ import { convertFromDate } from 'src/util/date';
 })
 export class CreateHealthEventComponent {
   repeatIntervalValues = (Object.values(ReapeatInterval) as ReapeatInterval[]).filter(o => !isNaN(o));
-  isCreating = true;
+  isNew = true;
+
+  @Output()
+  delete = new EventEmitter<void>();
 
   editForm = this.fb.group({
     name: ['', [Validators.required]],
@@ -32,9 +37,10 @@ export class CreateHealthEventComponent {
 
   constructor(
     protected fb: FormBuilder,
-    private cookieService: CookieService,
     private catService: CatService,
-    private activeModal: NgbActiveModal
+    private eventService: HealthEventService,
+    private activeModal: NgbActiveModal,
+    private modalService: NgbModal
   ) {}
 
   ngOnInit():void {
@@ -61,12 +67,18 @@ export class CreateHealthEventComponent {
   }
 
   onSubmit(): void {
-    const healthEvent = new HealthEvent;
-    const user = new User;
-    user.id = this.cookieService.get("id");
-    healthEvent.usuario = user;
+    const healthEvent = new HealthEvent();
     healthEvent.createFromForm(this.editForm);
     this.activeModal.close(healthEvent);
+  }
+
+  onDelete(): void {
+    const ref = this.modalService.open(ConfirmationModalComponent, {centered: true});
+    ref.componentInstance.text = "Você tem certeza que deseja excluir este evento?";
+    ref.closed.subscribe(() => {
+      this.delete.emit();
+      this.activeModal.dismiss();
+    })
   }
 
   dismiss(): void {
@@ -106,7 +118,7 @@ export class CreateHealthEventComponent {
 
   firstTimeLoadDate(): void {
     const input = <HTMLInputElement> document.querySelector('#date');
-    const date = this.editForm.get('date')?.value ?? new Date;
+    const date = this.editForm.get('date')?.value ?? new Date();
     input.value = convertFromDate(date);
   }
 

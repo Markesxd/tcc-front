@@ -29,16 +29,14 @@ export class HealthComponent {
   ) {}
 
   ngOnInit(): void {
-    this.healthEventService.fetch().subscribe(res => {
-      this.events = res as IHealthEvent[];
-    })
+    this.load();
   }
 
   openModal(event?: IHealthEvent): void {
     const ref = this.modalService.open(CreateHealthEventComponent, {centered: true});
     if(event) {
       const data = new Date(event.data??'');
-      ref.componentInstance.isCreating = false;
+      ref.componentInstance.isNew = false;
       ref.componentInstance.editForm.patchValue({
         name: event.nome,
         date: data,
@@ -48,6 +46,7 @@ export class HealthComponent {
       setTimeout(()=> {
         ref.componentInstance.firstTimeLoadDate();
       }, 200);
+      ref.componentInstance.delete.subscribe(() => this.deleteEvent(event));
     }
     ref.closed.subscribe((_event: IHealthEvent) => {
       if(event !== undefined){
@@ -71,5 +70,11 @@ export class HealthComponent {
     this.healthEventService.delete(event.id).subscribe(() => {
       this. events = this.events?.filter(evt => evt !== event);
     });
+  }
+
+  private load(): void {
+    this.healthEventService.fetch().subscribe(res => {
+      this.events = res as IHealthEvent[];
+    })
   }
 }
