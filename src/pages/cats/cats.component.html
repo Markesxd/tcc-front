@@ -4,7 +4,7 @@
 </div>
 <div (touchstart)="onTouchStart($event)" (touchend)="onTouchEnd($event)" class="cats-page-content" *ngIf="hasCats; else noCat">
     <ngb-carousel
-        class="cards"
+        class="cards mt-5"
         [wrap]="false"
         (slide)="updateBubble($event)"
         [showNavigationArrows]="false"

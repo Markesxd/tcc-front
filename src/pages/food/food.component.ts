@@ -35,13 +35,13 @@ export class FoodComponent implements OnInit {
       return;
     }
     const delta = event.changedTouches[0].clientX - this.touchStartX
-    if(Math.abs(delta) < 100) {
+    if(Math.abs(delta) < 10) {
       return;
     }
     
     delta < 0 
-    ? this.carousel.next()
-    : this.carousel.prev();
+    ? this.onNextCard()
+    : this.onPreviousCard();
   }
   
   updateBubble(event: NgbSlideEvent) {

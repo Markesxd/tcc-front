@@ -43,20 +43,22 @@ export class CatsPageComponent implements OnInit {
       return;
     }
     const delta = event.changedTouches[0].clientX - this.touchStartX
-    if(Math.abs(delta) < 100) {
+    if(Math.abs(delta) < 10) {
       return;
     }
     
     delta < 0 
-    ? this.carousel.next()
-    : this.carousel.prev();
+    ? this.onNextCard()
+    : this.onPreviousCard();
   }
 
   onNextCard(): void {
+    this.currentCard++;
     this.carousel.next();
   }
 
   onPreviousCard(): void {
+    this.currentCard--;
     this.carousel.prev();
   }
 
@@ -65,7 +67,7 @@ export class CatsPageComponent implements OnInit {
   }
 
   openModal(cat?: ICat): void {
-    const ref = this.modalService.open(CreateCatComponent, {centered: true});
+    const ref = this.modalService.open(CreateCatComponent);
     if(cat) {
       ref.componentInstance.isNew = false;
       ref.componentInstance.editForm.patchValue({
@@ -96,7 +98,6 @@ export class CatsPageComponent implements OnInit {
     if(i < 0 || i > this.pets.length - 1) {
       return;
     }
-    // this.direction = i < this._currentCard ? 'left' : 'right';
     this._currentCard = i;
   }
 
