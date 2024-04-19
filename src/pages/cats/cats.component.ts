@@ -1,7 +1,7 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
-import { NgbModal, NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { NgbCarousel, NgbModal, NgbModule, NgbSlideEvent } from '@ng-bootstrap/ng-bootstrap';
 import { CreateCatComponent } from 'src/components/create-cat/create-cat.component';
 import { CatService } from 'src/services/cat.service';
 import { ICat } from 'src/model/Cat.model';
@@ -13,29 +13,16 @@ import { PlanService } from 'src/services/plan.service';
   templateUrl: './cats.component.html',
   styleUrls: ['./cats.component.css'],
   standalone: true,
-  imports: [CommonModule, NgbModule],
-  animations: [
-    trigger('cardsAnimation', [
-      state('left', style({transform: 'translateX(0)'})),
-      state('right', style({transform: 'translateX(0)'})),
-      transition('void => right', [
-        style({transform: 'translateX(100%)'}),
-        animate(300)
-      ]),
-      transition('void => left', [
-        style({transform: 'translateX(-100%)'}),
-        animate(300)
-      ])
-    ])
-  ]
+  imports: [CommonModule, NgbModule, NgbCarousel],
 })
 export class CatsPageComponent implements OnInit {
+  @ViewChild('carousel') carousel!: NgbCarousel;
+
   pets: ICat[] = [];
   plans: IPlan[] = [];
 
-  direction = 'right';
+  private touchStartX: number | null = null;
   private _currentCard = 0;
-  private _id = '';
 
   constructor(
     private catService: CatService,
@@ -46,13 +33,35 @@ export class CatsPageComponent implements OnInit {
   ngOnInit(): void {
     this.load();
   }
+  
+  onTouchStart(event: TouchEvent): void {
+    this.touchStartX = event.changedTouches[0].clientX;
+  }
+
+  onTouchEnd(event: TouchEvent): void {
+    if(this.touchStartX === null) {
+      return;
+    }
+    const delta = event.changedTouches[0].clientX - this.touchStartX
+    if(Math.abs(delta) < 100) {
+      return;
+    }
+    
+    delta < 0 
+    ? this.carousel.next()
+    : this.carousel.prev();
+  }
 
   onNextCard(): void {
-    this.currentCard++;
+    this.carousel.next();
   }
 
   onPreviousCard(): void {
-    this.currentCard--;
+    this.carousel.prev();
+  }
+
+  updateBubble(event: NgbSlideEvent): void {
+    this.currentCard = Number(event.current.split('-')[2]);
   }
 
   openModal(cat?: ICat): void {
@@ -87,7 +96,7 @@ export class CatsPageComponent implements OnInit {
     if(i < 0 || i > this.pets.length - 1) {
       return;
     }
-    this.direction = i < this._currentCard ? 'left' : 'right';
+    // this.direction = i < this._currentCard ? 'left' : 'right';
     this._currentCard = i;
   }
 

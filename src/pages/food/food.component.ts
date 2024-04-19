@@ -1,27 +1,52 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CreatePlanComponent } from './components/create-plan/create-plan.component';
 import { IPlan, Meal } from 'src/model/Plan.model';
 import { PlanService } from 'src/services/plan.service';
-import { NgbModal, NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbCarousel, NgbCarouselModule, NgbModal, NgbModule, NgbSlideEvent } from '@ng-bootstrap/ng-bootstrap';
 import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-food',
   standalone: true,
-  imports: [CommonModule, CreatePlanComponent, NgbModule],
+  imports: [CommonModule, CreatePlanComponent, NgbModule, NgbCarouselModule],
   templateUrl: './food.component.html',
   styleUrls: ['./food.component.css']
 })
 export class FoodComponent implements OnInit {
+  @ViewChild('carousel') carousel!: NgbCarousel;
 
   plans: IPlan[] = [];
   private _currentCard = 0;
+
+  private touchStartX: number | null = null;
 
   constructor(
     private planService: PlanService,
     private modalService: NgbModal
   ) {}
+
+  onTouchStart(event: TouchEvent): void {
+    this.touchStartX = event.changedTouches[0].clientX;
+  }
+
+  onTouchEnd(event: TouchEvent): void {
+    if(this.touchStartX === null) {
+      return;
+    }
+    const delta = event.changedTouches[0].clientX - this.touchStartX
+    if(Math.abs(delta) < 100) {
+      return;
+    }
+    
+    delta < 0 
+    ? this.carousel.next()
+    : this.carousel.prev();
+  }
+  
+  updateBubble(event: NgbSlideEvent) {
+    this.currentCard = Number(event.current.split('-')[2]);
+  }
 
   ngOnInit(): void {
     this.load();
@@ -62,10 +87,16 @@ export class FoodComponent implements OnInit {
 
   onPreviousCard(): void {
     this.currentCard--;
+    this.carousel.prev();
   }
 
   onNextCard(): void {
     this.currentCard++;
+    this.carousel.next();
+  }
+
+  onBubbleClick(): void {
+    this.carousel.select("slide-ngb-slide-" + this.currentCard);
   }
 
   onServingMeal(event: any): void {
@@ -97,11 +128,5 @@ export class FoodComponent implements OnInit {
     this.planService.fetch().subscribe(plans => {
       this.plans = plans as IPlan[];
     });
-  }
-
-  private onModalClose(plan: IPlan): Observable<unknown> {
-    if(plan.id){
-    }
-    return this.planService.post(plan)
   }
 }

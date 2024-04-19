@@ -2,10 +2,17 @@
     <h2 class="page-title">Meus Gatos</h2>
     <svg (click)="openModal()" xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM232 344V280H168c-13.3 0-24-10.7-24-24s10.7-24 24-24h64V168c0-13.3 10.7-24 24-24s24 10.7 24 24v64h64c13.3 0 24 10.7 24 24s-10.7 24-24 24H280v64c0 13.3-10.7 24-24 24s-24-10.7-24-24z"/></svg>
 </div>
-<div class="cats-page-content" *ngIf="hasCats; else noCat">
-    <div class="cards">
-        <ng-container *ngFor="let pet of pets; let i = index">
-            <div *ngIf="i === currentCard" class="card" [@cardsAnimation]="direction">
+<div (touchstart)="onTouchStart($event)" (touchend)="onTouchEnd($event)" class="cats-page-content" *ngIf="hasCats; else noCat">
+    <ngb-carousel
+        class="cards"
+        [wrap]="false"
+        (slide)="updateBubble($event)"
+        [showNavigationArrows]="false"
+        [interval]="0"
+        #carousel
+    >
+        <ng-template *ngFor="let pet of pets; let i = index" ngbSlide>
+            <div class="card">
                 <div class="card--header mb-1">
                     <div class="d-flex gap-2">
                         <h3 class="card-title">{{pet.nome}}</h3>
@@ -31,8 +38,8 @@
                 </div>
                 <img class="card-img" src="" onerror="this.onerror=null; this.src='../../assets/cat-icon.svg' " alt="foto de {{pet.nome}}">
             </div>
-        </ng-container>
-    </div>
+        </ng-template>
+    </ngb-carousel>
     <span class="arrow-left" (click)="onPreviousCard()">
         <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 320 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z"/></svg>
     </span>
