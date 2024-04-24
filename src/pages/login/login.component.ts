@@ -1,13 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { jwtDecode } from 'jwt-decode';
-import { CookieService } from 'ngx-cookie-service';
 import { catchError, map } from 'rxjs';
-import { UserService } from 'src/services/user.service';
 import { User } from 'src/model/User.model';
+import { AuthService } from 'src/services/auth.service';
 
 @Component({
   selector: 'login',
@@ -28,8 +25,7 @@ export class LoginComponent {
 
   constructor (
     protected fb: FormBuilder,
-    private userService: UserService,
-    private cookieService: CookieService,
+    private authService: AuthService,
     private router: Router
   ) {}
 
@@ -50,19 +46,17 @@ export class LoginComponent {
     const user = new User();
     user.createFromForm(this.editForm);
     user.username = user.email;
-    this.userService.login(user)
-    .pipe(map(d => d),
-    catchError((err: HttpErrorResponse) => {
-      if(err.status === 401) {
-        this.loginFailed = true;
-      } else {
-        this.serviceFailed = true;
-      }
-      throw err;
-    }))
-    .subscribe(response => {
-      this.cookieService.set('token', response.token, 1);
-      this.router.navigate(['food']);
-    })
+    this.authService.login(user)
+      .pipe(catchError((err) => {
+        if(err.status === 401) {
+          this.loginFailed = true;
+        } else {
+          this.serviceFailed = true;
+        }
+        throw err;
+      }))
+      .subscribe(() => {
+        this.router.navigate(['food']); 
+      });
   }
 }

@@ -1,10 +1,9 @@
 import { NgModule, inject } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivateFn, Router, RouterModule, RouterStateSnapshot, Routes, UrlSegment, UrlSegmentGroup, UrlTree } from '@angular/router';
-import { CookieService } from 'ngx-cookie-service';
+import { CanActivateFn, Router, RouterModule, Routes } from '@angular/router';
 
 const canActivate: CanActivateFn = () => {
-  const token = inject(CookieService).get("token");
-  if(token != undefined && token != '') {
+  const token = localStorage.getItem('token');
+  if(token != null && token != '') {
     return true;
   } else {
     inject(Router).navigate(['/']);

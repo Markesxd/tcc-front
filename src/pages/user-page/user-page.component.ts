@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { UserService } from 'src/services/user.service';
 import { IUser, User } from 'src/model/User.model';
+import { AuthService } from 'src/services/auth.service';
 
 @Component({
   selector: 'user-page',
@@ -15,9 +16,9 @@ export class UserPageComponent implements OnInit{
   user: IUser = new User;
 
   constructor (
-    private cookieService: CookieService,
     private router: Router,
-    private userService: UserService
+    private userService: UserService,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
@@ -27,7 +28,8 @@ export class UserPageComponent implements OnInit{
   }
 
   logout(): void {
-    this.cookieService.delete('token');
-    this.router.navigate(['/']);
+    this.authService.logout().subscribe(
+      () => this.router.navigate(['/']) 
+    );
   }
 }

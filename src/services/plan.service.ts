@@ -13,34 +13,27 @@ export class PlanService {
     
     constructor(
         private http: HttpClient,
-        private cookieService: CookieService
     ) {}
 
     post(plan: IPlan): Observable<HttpResponse<Object>> {
         return this.http.post(this.baseUrl, plan, {
-            headers: this.getHeaders(), 
             observe: 'response'
         });
     }
 
     fetch(): Observable<Object> {
-        return this.http.get(this.baseUrl, {headers: this.getHeaders()});
+        return this.http.get(this.baseUrl);
     }
 
     put(plan: IPlan): Observable<Object> {
-        return this.http.put(`${this.baseUrl}/${plan.id}`, plan, {headers: this.getHeaders()});
+        return this.http.put(`${this.baseUrl}/${plan.id}`, plan);
     }
 
     delete(plan: IPlan): Observable<Object> {
-        return this.http.delete(`${this.baseUrl}/${plan.id}`, {headers: this.getHeaders()});
+        return this.http.delete(`${this.baseUrl}/${plan.id}`);
     }
 
     serve(meal: IMeal): Observable<Object> {
-        return this.http.put(`${this.baseUrl}/servir`, meal, {headers: this.getHeaders()});
-    }
-
-    private getHeaders(): HttpHeaders {
-        const headers = new HttpHeaders();
-        return headers.set("Authorization", "Bearer " + this.cookieService.get('token'));
+        return this.http.put(`${this.baseUrl}/servir`, meal);
     }
 }

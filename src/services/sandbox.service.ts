@@ -10,30 +10,22 @@ export class SandboxService {
     private readonly baseUrl = environment.apiUrl + '/caixa-de-areia';
 
     constructor(
-        private http: HttpClient,
-        private cookieService: CookieService
+        private http: HttpClient
     ) {}
 
     create(sandbox: ISandbox): Observable<Object> {
-        return this.http.post(this.baseUrl, sandbox, {
-            headers: this.getHeaders(),
-        });
+        return this.http.post(this.baseUrl, sandbox);
     }
 
     delete(id: number): Observable<Object> {
-        return this.http.delete(`${this.baseUrl}/${id}`, {headers: this.getHeaders()});
+        return this.http.delete(`${this.baseUrl}/${id}`);
     }
 
     patch(sandbox: ISandbox): Observable<Object> {
-        return this.http.put(`${this.baseUrl}/${sandbox.id}`, sandbox, {headers: this.getHeaders()});
+        return this.http.put(`${this.baseUrl}/${sandbox.id}`, sandbox);
     }
 
     fetch(): Observable<Object> {
-        return this.http.get(this.baseUrl, {headers: this.getHeaders()});
-    }
-
-    private getHeaders(): HttpHeaders {
-        const headers = new HttpHeaders();
-        return headers.set("Authorization", "Bearer " + this.cookieService.get('token'));
+        return this.http.get(this.baseUrl);
     }
 }
