@@ -53,7 +53,7 @@ export class FoodComponent implements OnInit {
   }
 
   openModal(plan?: IPlan): void {
-    const ref = this.modalService.open(CreatePlanComponent, {centered: true});
+    const ref = this.modalService.open(CreatePlanComponent);
     if(plan) {
       ref.componentInstance.isNew = false;
       ref.componentInstance.editForm.patchValue({
@@ -127,6 +127,7 @@ export class FoodComponent implements OnInit {
   private load(): void {
     this.planService.fetch().subscribe(plans => {
       this.plans = plans as IPlan[];
+      this.currentCard = 0;
     });
   }
 }

@@ -1,3 +1,3 @@
 export const environment = {
-    apiUrl: 'https://meownager.ufsj.tech/'
+    apiUrl: 'https://meownager.ufsj.tech/api'
 };

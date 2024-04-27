@@ -25,7 +25,7 @@ export class HealthEventService {
     }
 
     put(healthEvent: IHealthEvent): Observable<Object> {
-        return this.http.put(this.baseUrl, healthEvent, {
+        return this.http.put(`${this.baseUrl}/${healthEvent.id}`, healthEvent, {
             observe: 'response'
         });
     }

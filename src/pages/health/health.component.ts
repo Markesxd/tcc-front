@@ -33,7 +33,7 @@ export class HealthComponent {
   }
 
   openModal(event?: IHealthEvent): void {
-    const ref = this.modalService.open(CreateHealthEventComponent, {centered: true});
+    const ref = this.modalService.open(CreateHealthEventComponent);
     if(event) {
       const data = new Date(event.data??'');
       ref.componentInstance.isNew = false;

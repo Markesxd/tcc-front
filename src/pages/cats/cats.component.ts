@@ -143,6 +143,7 @@ export class CatsPageComponent implements OnInit {
   private load(): void {
     this.catService.get().subscribe(res => {
       this.pets = res.body as ICat[];
+      this.currentCard = 0;
     });
     this.planService.fetch().subscribe(res => {
       this.plans = <IPlan[]> res;
