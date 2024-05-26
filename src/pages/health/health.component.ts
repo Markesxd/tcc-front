@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CreateHealthEventComponent } from './components/create-health-event/create-health-event.component';
-import { IHealthEvent } from 'src/model/healthEvent.model';
+import { IHealthEvent, ReapeatInterval } from 'src/model/healthEvent.model';
 import { HealthEventService } from 'src/services/healthEvent.service';
 import { UserService } from 'src/services/user.service';
 import { CookieService } from 'ngx-cookie-service';
@@ -52,12 +52,11 @@ export class HealthComponent {
       if(event !== undefined){
         _event.id = event.id;
         this.healthEventService.put(_event).subscribe(() => {
-          this.events = this.events?.filter(evt => evt.id !== event.id);
-          this.events?.push(_event);
+          this.load();
         });
       } else {
-        this.healthEventService.post(_event).subscribe((res) => {
-          this.events?.push(res);
+        this.healthEventService.post(_event).subscribe(() => {
+          this.load();
         });
       }
     });
@@ -68,13 +67,74 @@ export class HealthComponent {
       throw new Error('Evento sem id');
     }
     this.healthEventService.delete(event.id).subscribe(() => {
-      this. events = this.events?.filter(evt => evt !== event);
+      this.load();
     });
   }
 
   private load(): void {
     this.healthEventService.fetch().subscribe(res => {
-      this.events = res as IHealthEvent[];
+      this.events = this.futureEvents(res as IHealthEvent[]);
     })
+  }
+
+  private futureEvents(events: IHealthEvent[]): IHealthEvent[] {
+    //@ts-ignore
+    events.forEach(event => event.data = new Date(event.data));
+    return events
+      .filter((event) => this.filterEvents(event))
+      .sort(this.dateSort);
+  }
+
+  private filterEvents(event: IHealthEvent): boolean {
+    if(this.isEventOnFuture(event)) {
+      return true;
+    }
+
+    //does the event have repetition?
+    if(event.intervaloDeRepeticao !== ReapeatInterval.NO_REPEAT){
+      while(!this.isEventOnFuture(event)) {
+        this.incrementEventDate(event);
+      }
+      return true;
+    }
+    return false;
+  }
+
+  private isEventOnFuture(event: IHealthEvent): boolean {
+    const today = new Date();
+    if(!event.data) {
+      return false;
+    }
+
+    if(today < event.data) {
+      return true;
+    }
+    return false;
+  }
+
+  private incrementEventDate(event: IHealthEvent): void {
+    if(!event.data) {
+      return;
+    }
+    switch(event.intervaloDeRepeticao) {
+      case ReapeatInterval.DAILY:
+        event.data.setDate(event.data.getDate() + 1);
+        return;
+      case ReapeatInterval.WEEKLY:
+        event.data.setDate(event.data.getDate() + 7);
+        return;
+      case ReapeatInterval.MONTHLY:
+        event.data.setMonth(event.data.getMonth() + 1);
+        return;
+      case ReapeatInterval.YEARLY:
+        event.data.setFullYear(event.data.getFullYear() + 1);    
+    }
+  }
+
+  private dateSort(a: IHealthEvent, b: IHealthEvent) {
+    if(a.data === undefined || b.data === undefined) {
+      throw new Error("A date is undefined");
+    }
+    return a.data.getTime() - b.data.getTime();
   }
 }
